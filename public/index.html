@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who Is The Greatest Pokemon?</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>WHO IS THE GREATEST POKEMON?</h1>
+
+  <main>
+    <section class="battle">
+      <div class="pokemon-card" id="card1">
+        <div class="img-wrap">
+          <img id="img1" src="" alt="" />
+        </div>
+        <span class="poke-name" id="name1"></span>
+      </div>
+
+      <div class="vs">VS</div>
+
+      <div class="pokemon-card" id="card2">
+        <div class="img-wrap">
+          <img id="img2" src="" alt="" />
+        </div>
+        <span class="poke-name" id="name2"></span>
+      </div>
+    </section>
+
+    <aside class="leaderboard">
+      <h2>TOP 10</h2>
+      <ol id="lb-list">
+        <li class="empty">No votes yet</li>
+      </ol>
+    </aside>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

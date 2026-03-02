@@ -1,0 +1,208 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #000;
+  min-height: 100vh;
+  padding: 48px 24px 64px;
+}
+
+/* ── Title ── */
+h1 {
+  text-align: center;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 56px;
+}
+
+/* ── Layout ── */
+main {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* ── Battle area ── */
+.battle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.pokemon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 20px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.15s, transform 0.15s;
+  user-select: none;
+}
+
+.pokemon-card:hover {
+  border-color: #000;
+  transform: scale(1.04);
+}
+
+.pokemon-card.selected {
+  border-color: #000;
+  background: #f5f5f5;
+}
+
+.img-wrap {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 0.2s;
+}
+
+.img-wrap img.loading {
+  opacity: 0;
+}
+
+.poke-name {
+  margin-top: 14px;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.vs {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #bbb;
+  flex-shrink: 0;
+}
+
+/* ── Leaderboard ── */
+.leaderboard {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.leaderboard h2 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #000;
+  margin-bottom: 16px;
+}
+
+#lb-list {
+  list-style: none;
+}
+
+#lb-list .empty {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+#lb-list li.entry {
+  padding: 8px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.entry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.entry-rank {
+  font-size: 0.7rem;
+  color: #aaa;
+  margin-right: 5px;
+  min-width: 16px;
+}
+
+.entry-name {
+  font-size: 0.82rem;
+  font-weight: 400;
+  text-transform: capitalize;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry-pct {
+  font-size: 0.78rem;
+  color: #555;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.bar-track {
+  height: 3px;
+  background: #ebebeb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #000;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* ── Loading overlay ── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  z-index: 10;
+}
+
+/* ── Responsive: stack on small screens ── */
+@media (max-width: 680px) {
+  main {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .leaderboard {
+    width: 100%;
+    border-top: 2px solid #000;
+    padding-top: 32px;
+    margin-top: 8px;
+  }
+
+  .battle {
+    gap: 12px;
+  }
+
+  .img-wrap {
+    width: 130px;
+    height: 130px;
+  }
+}
