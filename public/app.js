@@ -112,7 +112,6 @@
         <div class="entry-row">
           <span class="entry-rank">${i + 1}</span>
           <span class="entry-name">${formatName(e.name)}</span>
-          <span class="entry-pct">${pct}%</span>
         </div>
         <div class="bar-track">
           <div class="bar-fill" style="width:${pct}%"></div>

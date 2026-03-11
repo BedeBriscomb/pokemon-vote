@@ -149,15 +149,8 @@ main {
   text-overflow: ellipsis;
 }
 
-.entry-pct {
-  font-size: 0.78rem;
-  color: #555;
-  flex-shrink: 0;
-  margin-left: 6px;
-}
-
 .bar-track {
-  height: 3px;
+  height: 8px;
   background: #ebebeb;
   border-radius: 2px;
   overflow: hidden;
@@ -165,7 +158,7 @@ main {
 
 .bar-fill {
   height: 100%;
-  background: #000;
+  background: #e03030;
   border-radius: 2px;
   transition: width 0.5s ease;
 }
