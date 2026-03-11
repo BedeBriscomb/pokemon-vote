@@ -34,10 +34,6 @@
   }
 
   // ── Helpers ───────────────────────────────────────────────
-  function spriteUrl(name) {
-    return `https://img.pokemondb.net/sprites/scarlet-violet/icon/${name}.png`;
-  }
-
   function formatName(name) {
     return name
       .split('-')
@@ -63,20 +59,21 @@
     setCard(img2, name2, p2);
   }
 
-  function setCard(imgEl, nameEl, pokeName) {
+  function setCard(imgEl, nameEl, pokemon) {
     imgEl.classList.add('loading');
     imgEl.src = '';
     nameEl.textContent = '';
 
-    const url = spriteUrl(pokeName);
     imgEl.onload  = () => imgEl.classList.remove('loading');
     imgEl.onerror = () => {
+      // pokemondb doesn't host form-variant sprites (e.g. mimikyu-disguised).
+      // Fall back to PokeAPI's sprite repo, indexed by ID, which covers every form.
       imgEl.onerror = null;
-      imgEl.src = `https://img.pokemondb.net/sprites/home/normal/${pokeName}.png`;
+      imgEl.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
       imgEl.classList.remove('loading');
     };
-    imgEl.src = url;
-    nameEl.textContent = formatName(pokeName);
+    imgEl.src = `https://img.pokemondb.net/sprites/scarlet-violet/icon/${pokemon.name}.png`;
+    nameEl.textContent = formatName(pokemon.name);
   }
 
   // ── Vote ──────────────────────────────────────────────────
@@ -91,7 +88,7 @@
     // 🔊 Play the vote sound!
     playCry();
 
-    socket.emit('vote', chosen);
+    socket.emit('vote', chosen.name);
     setTimeout(loadPair, 420);
   }
 
@@ -129,14 +126,23 @@
     try {
       const res  = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
       const data = await res.json();
-      pokemonList = data.results.map(p => p.name);
+      pokemonList = data.results.map(p => ({
+        name: p.name,
+        id: +p.url.split('/').filter(Boolean).pop(),
+      }));
     } catch {
-      // Minimal fallback
+      // Minimal fallback with national dex IDs
       pokemonList = [
-        'bulbasaur','charmander','squirtle','pikachu','mewtwo','mew',
-        'gengar','snorlax','dragonite','eevee','charizard','blastoise',
-        'venusaur','raichu','vaporeon','jolteon','flareon','gyarados',
-        'lapras','ditto',
+        { name: 'bulbasaur', id: 1 },  { name: 'charmander', id: 4 },
+        { name: 'squirtle',  id: 7 },  { name: 'pikachu',    id: 25 },
+        { name: 'mewtwo',    id: 150 }, { name: 'mew',        id: 151 },
+        { name: 'gengar',    id: 94 },  { name: 'snorlax',    id: 143 },
+        { name: 'dragonite', id: 149 }, { name: 'eevee',      id: 133 },
+        { name: 'charizard', id: 6 },   { name: 'blastoise',  id: 9 },
+        { name: 'venusaur',  id: 3 },   { name: 'raichu',     id: 26 },
+        { name: 'vaporeon',  id: 134 }, { name: 'jolteon',    id: 135 },
+        { name: 'flareon',   id: 136 }, { name: 'gyarados',   id: 130 },
+        { name: 'lapras',    id: 131 }, { name: 'ditto',      id: 132 },
       ];
     }
 
