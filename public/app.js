@@ -102,10 +102,9 @@
       lbList.innerHTML = '<li class="empty">No votes yet</li>';
       return;
     }
-    // Scale bars so #1 is always 100% wide; others are relative to it
-    const maxCount = entries[0].count || 1;
+    const total = entries.reduce((sum, e) => sum + e.count, 0);
     entries.forEach((e, i) => {
-      const barPct = +((e.count / maxCount) * 100).toFixed(1);
+      const barPct = total > 0 ? +((e.count / total) * 100).toFixed(1) : 0;
       const li  = document.createElement('li');
       li.className = 'entry';
       li.innerHTML = `
