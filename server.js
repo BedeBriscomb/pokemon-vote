@@ -57,22 +57,25 @@ io.on('connection', (socket) => {
 });
 
 async function start() {
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
+  if (!process.env.MONGO_URI) {
+    console.error('WARNING: MONGO_URI env var is not set — votes will not persist across restarts');
+  } else {
+    try {
+      await client.connect();
+      console.log('Connected to MongoDB');
 
-    const db = client.db('pokemon');
-    votesCol = db.collection('votes');
+      const db = client.db('pokemon');
+      votesCol = db.collection('votes');
 
-    // Load persisted votes into memory
-    const stored = await votesCol.find({}).toArray();
-    for (const doc of stored) {
-      votes[doc._id] = doc.count;
-      totalVotes += doc.count;
+      const stored = await votesCol.find({}).toArray();
+      for (const doc of stored) {
+        votes[doc._id] = doc.count;
+        totalVotes += doc.count;
+      }
+      console.log(`Loaded ${stored.length} Pokemon with ${totalVotes} total votes from DB`);
+    } catch (err) {
+      console.error('MongoDB connection failed — votes will not persist:', err.message);
     }
-    console.log(`Loaded ${stored.length} Pokemon with ${totalVotes} total votes from DB`);
-  } catch (err) {
-    console.error('MongoDB connection failed — running with in-memory votes only:', err.message);
   }
 
   const PORT = process.env.PORT || 3000;
