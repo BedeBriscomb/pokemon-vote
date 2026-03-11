@@ -17,6 +17,22 @@ let votesCol; // MongoDB collection handle
 const votes = {};
 let totalVotes = 0;
 
+// Valid Pokemon names fetched from PokeAPI on startup
+let validPokemon = new Set();
+
+async function loadValidPokemon() {
+  try {
+    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
+    if (!res.ok) throw new Error(`PokeAPI returned ${res.status}`);
+    const data = await res.json();
+    validPokemon = new Set(data.results.map((p) => p.name));
+    console.log(`Loaded ${validPokemon.size} valid Pokemon names from PokeAPI`);
+  } catch (err) {
+    console.error('Failed to load Pokemon list from PokeAPI:', err.message);
+    console.error('Vote validation will reject all votes until the list is loaded');
+  }
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 function getLeaderboard() {
@@ -37,6 +53,7 @@ io.on('connection', (socket) => {
     if (typeof pokemonName !== 'string' || pokemonName.length > 100) return;
     const clean = pokemonName.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
     if (!clean) return;
+    if (!validPokemon.has(clean)) return;
 
     // Update in-memory cache
     votes[clean] = (votes[clean] || 0) + 1;
@@ -54,6 +71,9 @@ io.on('connection', (socket) => {
 });
 
 async function start() {
+  // Fetch valid Pokemon list before accepting any votes
+  await loadValidPokemon();
+
   if (!process.env.MONGO_URI) {
     console.error('WARNING: MONGO_URI env var is not set — votes will not persist across restarts');
   } else {
@@ -63,6 +83,14 @@ async function start() {
 
       const db = client.db('pokemon');
       votesCol = db.collection('votes');
+
+      // Remove any votes for names that aren't real Pokemon
+      if (validPokemon.size > 0) {
+        const result = await votesCol.deleteMany({ _id: { $nin: Array.from(validPokemon) } });
+        if (result.deletedCount > 0) {
+          console.log(`Purged ${result.deletedCount} fake vote entries from MongoDB`);
+        }
+      }
 
       const stored = await votesCol.find({}).toArray();
       for (const doc of stored) {
