@@ -3,7 +3,6 @@ const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
@@ -11,9 +10,7 @@ const io = new Server(server, {
   cors: { origin: '*' },
 });
 
-const MONGO_URI = process.env.MONGO_URI;
-
-const client = new MongoClient(MONGO_URI);
+const client = new MongoClient(process.env.MONGO_URI, { tlsInsecure: true });
 let votesCol; // MongoDB collection handle
 
 // In-memory cache (kept in sync with DB for fast leaderboard reads)
