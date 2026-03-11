@@ -150,7 +150,7 @@ main {
 }
 
 .bar-track {
-  height: 8px;
+  height: 12px;
   background: #ebebeb;
   border-radius: 2px;
   overflow: hidden;

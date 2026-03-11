@@ -102,10 +102,10 @@
       lbList.innerHTML = '<li class="empty">No votes yet</li>';
       return;
     }
-    // Guard: recalculate percentages client-side if server sends 0s
-    const total = entries.reduce((sum, e) => sum + e.count, 0);
+    // Scale bars so #1 is always 100% wide; others are relative to it
+    const maxCount = entries[0].count || 1;
     entries.forEach((e, i) => {
-      const pct = total > 0 ? +((e.count / total) * 100).toFixed(1) : e.percentage;
+      const barPct = +((e.count / maxCount) * 100).toFixed(1);
       const li  = document.createElement('li');
       li.className = 'entry';
       li.innerHTML = `
@@ -114,7 +114,7 @@
           <span class="entry-name">${formatName(e.name)}</span>
         </div>
         <div class="bar-track">
-          <div class="bar-fill" style="width:${pct}%"></div>
+          <div class="bar-fill" style="width:${barPct}%"></div>
         </div>`;
       lbList.appendChild(li);
     });
