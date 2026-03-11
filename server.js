@@ -20,6 +20,9 @@ let totalVotes = 0;
 // Valid Pokemon names fetched from PokeAPI on startup
 let validPokemon = new Set();
 
+// Rate limiting: track last vote timestamp per IP
+const lastVoteTime = new Map();
+
 async function loadValidPokemon() {
   try {
     const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
@@ -50,6 +53,11 @@ io.on('connection', (socket) => {
   socket.emit('leaderboard', getLeaderboard());
 
   socket.on('vote', async (pokemonName) => {
+    const ip = socket.handshake.address;
+    const now = Date.now();
+    if (now - (lastVoteTime.get(ip) || 0) < 2000) return;
+    lastVoteTime.set(ip, now);
+
     if (typeof pokemonName !== 'string' || pokemonName.length > 100) return;
     const clean = pokemonName.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
     if (!clean) return;
