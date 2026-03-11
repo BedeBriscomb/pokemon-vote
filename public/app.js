@@ -1,5 +1,5 @@
 (() => {
-  const socket = io();
+  const socket = io('https://pokemon-vote-production.up.railway.app');
 
   // Cached Pokemon list (names from PokeAPI)
   let pokemonList = [];
