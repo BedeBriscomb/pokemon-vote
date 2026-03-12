@@ -34,6 +34,9 @@
   const plink = new Audio('PokemonPlink.mp3');
   plink.volume = 0.7;
 
+  const evolveSound = new Audio('pokemon-evolve.mp3');
+  evolveSound.volume = 0.7;
+
   const soundToggle = document.getElementById('sound-toggle');
   soundToggle.addEventListener('click', () => {
     soundOn = !soundOn;
@@ -126,7 +129,15 @@
     socket.emit('vote', chosen.name);
     voteCount++;
     const isChampionship = voteCount % 20 === 0 && topTen.length >= 2;
-    setTimeout(() => loadPair(isChampionship), 420);
+    setTimeout(() => {
+      loadPair(isChampionship);
+      if (isChampionship && soundOn) {
+        try {
+          evolveSound.currentTime = 0;
+          evolveSound.play().catch(() => {});
+        } catch (_) {}
+      }
+    }, 420);
   }
 
   card1.addEventListener('click', () => vote(0));
