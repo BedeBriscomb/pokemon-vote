@@ -140,8 +140,8 @@ main {
 }
 
 .entry-sprite {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   image-rendering: pixelated;
   flex-shrink: 0;
