@@ -213,6 +213,26 @@ main {
   z-index: 10;
 }
 
+/* ── Responsive: tighten spacing on mobile ── */
+@media (max-width: 600px) {
+  body {
+    padding: 24px 16px 32px;
+  }
+
+  h1 {
+    margin-bottom: 12px;
+  }
+
+  #sound-toggle-wrap {
+    margin-bottom: 16px;
+  }
+
+  #sound-toggle {
+    width: 100px;
+    height: 100px;
+  }
+}
+
 /* ── Responsive: stack on small screens ── */
 @media (max-width: 680px) {
   main {
