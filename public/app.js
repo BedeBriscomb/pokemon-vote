@@ -6,6 +6,8 @@
   let pokemonIdMap = {};   // name → id, for leaderboard sprites
   let current = [null, null];
   let voted = false;
+  let voteCount = 0;
+  let topTen = [];          // latest top-10 names from leaderboard broadcasts
 
   // ── DOM refs ──────────────────────────────────────────────
   const card1   = document.getElementById('card1');
@@ -14,7 +16,8 @@
   const img2    = document.getElementById('img2');
   const name1   = document.getElementById('name1');
   const name2   = document.getElementById('name2');
-  const lbList  = document.getElementById('lb-list');
+  const lbList             = document.getElementById('lb-list');
+  const championshipBanner = document.getElementById('championship-banner');
 
   // Loading overlay
   const loading = document.createElement('div');
@@ -67,12 +70,25 @@
     return [pokemonList[a], pokemonList[b]];
   }
 
+  function pickTwoFromTopTen() {
+    const pool = topTen
+      .map(name => pokemonList.find(p => p.name === name))
+      .filter(Boolean);
+    // Need at least 2 entries; fall back to normal if not enough
+    if (pool.length < 2) return pickTwo();
+    const a = Math.floor(Math.random() * pool.length);
+    let b;
+    do { b = Math.floor(Math.random() * pool.length); } while (b === a);
+    return [pool[a], pool[b]];
+  }
+
   // ── Load a new pair ───────────────────────────────────────
-  function loadPair() {
+  function loadPair(championship = false) {
     voted = false;
     card1.classList.remove('selected');
     card2.classList.remove('selected');
-    const [p1, p2] = pickTwo();
+    championshipBanner.classList.toggle('hidden', !championship);
+    const [p1, p2] = championship ? pickTwoFromTopTen() : pickTwo();
     current = [p1, p2];
     setCard(img1, name1, p1);
     setCard(img2, name2, p2);
@@ -108,7 +124,9 @@
     playCry();
 
     socket.emit('vote', chosen.name);
-    setTimeout(loadPair, 420);
+    voteCount++;
+    const isChampionship = voteCount % 20 === 0 && topTen.length >= 2;
+    setTimeout(() => loadPair(isChampionship), 420);
   }
 
   card1.addEventListener('click', () => vote(0));
@@ -121,6 +139,7 @@
       lbList.innerHTML = '<li class="empty">No votes yet</li>';
       return;
     }
+    topTen = entries.slice(0, 10).map(e => e.name);
     const total = entries.reduce((sum, e) => sum + e.count, 0);
     entries.forEach((e, i) => {
       const barPct = total > 0 ? +((e.count / total) * 100).toFixed(1) : 0;
