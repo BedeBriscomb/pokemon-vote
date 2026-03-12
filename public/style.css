@@ -128,7 +128,7 @@ main {
 .entry-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 5px;
 }
 
@@ -137,6 +137,15 @@ main {
   color: #aaa;
   margin-right: 5px;
   min-width: 16px;
+}
+
+.entry-sprite {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  margin-right: 5px;
 }
 
 .entry-name {

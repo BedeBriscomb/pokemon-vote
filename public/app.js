@@ -3,6 +3,7 @@
 
   // Cached Pokemon list (names from PokeAPI)
   let pokemonList = [];
+  let pokemonIdMap = {};   // name → id, for leaderboard sprites
   let current = [null, null];
   let voted = false;
 
@@ -105,16 +106,25 @@
     const total = entries.reduce((sum, e) => sum + e.count, 0);
     entries.forEach((e, i) => {
       const barPct = total > 0 ? +((e.count / total) * 100).toFixed(1) : 0;
+      const id = pokemonIdMap[e.name];
       const li  = document.createElement('li');
       li.className = 'entry';
       li.innerHTML = `
         <div class="entry-row">
           <span class="entry-rank">${i + 1}</span>
+          <img class="entry-sprite" src="https://img.pokemondb.net/sprites/scarlet-violet/icon/${e.name}.png" alt="" />
           <span class="entry-name">${formatName(e.name)}</span>
         </div>
         <div class="bar-track">
           <div class="bar-fill" style="width:${barPct}%"></div>
         </div>`;
+      if (id) {
+        const img = li.querySelector('.entry-sprite');
+        img.onerror = () => {
+          img.onerror = null;
+          img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        };
+      }
       lbList.appendChild(li);
     });
   });
@@ -128,6 +138,7 @@
         name: p.name,
         id: +p.url.split('/').filter(Boolean).pop(),
       }));
+      pokemonList.forEach(p => { pokemonIdMap[p.name] = p.id; });
     } catch {
       // Minimal fallback with national dex IDs
       pokemonList = [
@@ -142,6 +153,7 @@
         { name: 'flareon',   id: 136 }, { name: 'gyarados',   id: 130 },
         { name: 'lapras',    id: 131 }, { name: 'ditto',      id: 132 },
       ];
+      pokemonList.forEach(p => { pokemonIdMap[p.name] = p.id; });
     }
 
     loading.remove();
