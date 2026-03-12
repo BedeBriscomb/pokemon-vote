@@ -10,6 +10,7 @@ body {
   color: #000;
   min-height: 100vh;
   padding: 48px 24px 64px;
+  position: relative;
 }
 
 /* ── Title ── */
@@ -19,6 +20,31 @@ h1 {
   font-weight: 700;
   letter-spacing: 0.06em;
   margin-bottom: 56px;
+}
+
+/* ── Sound toggle ── */
+#sound-toggle {
+  position: absolute;
+  top: 48px;
+  left: 24px;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+#sound-toggle img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#sound-toggle.sound-off {
+  opacity: 0.3;
 }
 
 /* ── Layout ── */

@@ -22,13 +22,31 @@
   loading.textContent = 'LOADING…';
   document.body.appendChild(loading);
 
-  // ── Audio: vote sound ─────────────────────────────────────
+  // ── Audio ─────────────────────────────────────────────────
+  let soundOn = false;
+
+  const bgMusic = document.getElementById('bg-music');
+  bgMusic.volume = 0.5;
+
   const plink = new Audio('PokemonPlink.mp3');
   plink.volume = 0.7;
 
+  const soundToggle = document.getElementById('sound-toggle');
+  soundToggle.addEventListener('click', () => {
+    soundOn = !soundOn;
+    soundToggle.classList.toggle('sound-off', !soundOn);
+    if (soundOn) {
+      bgMusic.play().catch(() => {});
+    } else {
+      bgMusic.pause();
+    }
+  });
+  // Start in OFF state
+  soundToggle.classList.add('sound-off');
+
   function playCry() {
+    if (!soundOn) return;
     try {
-      // Rewind so rapid clicks always play from the start
       plink.currentTime = 0;
       plink.play().catch(() => {});
     } catch (_) {}
